@@ -1,0 +1,33 @@
+# -- 主题 --
+theme = One Half Dark
+
+# -- 字体 --
+font-family = JetBrainsMono Nerd Font Mono
+font-family = PingFang SC
+font-size = 14
+font-thicken = true
+font-feature = +calt
+font-feature = +liga
+adjust-cell-height = +20%
+
+# -- 窗口 --
+background-opacity = 0.88
+background-blur = 30
+window-padding-balance = true
+window-save-state = always
+window-colorspace = display-p3
+term = xterm-256color
+
+# -- 快捷键 --
+keybind = cmd+d=new_split:right
+keybind = cmd+shift+d=new_split:down
+keybind = cmd+k=clear_screen
+
+# -- 光标 --
+cursor-style = bar
+cursor-style-blink = true
+
+# -- 其他 --
+link-url = true
+shell-integration = detect
+shell-integration-features = cursor,sudo,title
