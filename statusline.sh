@@ -21,16 +21,21 @@ input=$(cat)
 DIR=$(echo   "$input" | jq -r '.workspace.current_dir // ""')
 MODEL=$(echo "$input" | jq -r '.model.display_name // ""')
 
-# ── Context 计算（正确方式）────────────────────────────────────
-# 使用 current_usage.input_tokens（当前上下文实际占用），而非 total_input_tokens（累计值）
-USED=$(echo  "$input" | jq -r '.context_window.current_usage.input_tokens // 0')
+# ── Context 计算 ──────────────────────────────────────────────
+# used_percentage 是预计算字段，反映当前 context 窗口真实占用率
+# current_usage.input_tokens 只是最后一次 API 调用的输入 token，不代表整体占用
 MAX=$(echo   "$input" | jq -r '.context_window.context_window_size // 0')
-
-# 手动计算百分比（更可靠）
-if [ "$MAX" -gt 0 ] 2>/dev/null; then
-    PCT=$(( USED * 100 / MAX ))
+PCT_RAW=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+if [ -n "$PCT_RAW" ]; then
+    PCT=$(printf '%.0f' "$PCT_RAW")
 else
     PCT=0
+fi
+# USED 用于显示：用 PCT 反推近似值（与进度条一致）
+if [ "$MAX" -gt 0 ] 2>/dev/null; then
+    USED=$(( MAX * PCT / 100 ))
+else
+    USED=0
 fi
 
 # ── 模型名缩短："Claude Sonnet 4.5" → "Sonnet 4.5" ───────────
